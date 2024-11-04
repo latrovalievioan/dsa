@@ -1,36 +1,64 @@
-export const checkLine = (xs: string[]) => {
-    const valuesSet = new Set()
-
-    let isValid = true;
-
-    for (let i = 0; i < xs.length; i++) {
-        const curr = xs[i]
-
-        if(curr === '.') {
-            continue
-        }
-
-        if(valuesSet.has(curr)) {
-            isValid = false
-            break
-        }
-
-        valuesSet.add(curr)
-    }
-}
-
-function isValidSudoku(board: string[][]): boolean {
-    
+// Alone solution --- 0(N ** 2)
+type GetBoxIndexArgs = {
+  boxSize: number;
+  i: number;
+  j: number;
 };
 
-console.log(isValidSudoku([
-    ["5","3",".",".","7",".",".",".","."],
-    ["6",".",".","1","9","5",".",".","."],
-    [".","9","8",".",".",".",".","6","."],
-    ["8",".",".",".","6",".",".",".","3"],
-    ["4",".",".","8",".","3",".",".","1"],
-    ["7",".",".",".","2",".",".",".","6"],
-    [".","6",".",".",".",".","2","8","."],
-    [".",".",".","4","1","9",".",".","5"],
-    [".",".",".",".","8",".",".","7","9"]
-]))
+export const getBoxIndexes = ({ boxSize, i, j }: GetBoxIndexArgs) => {
+  return { i: Math.floor(i / boxSize), j: Math.floor(j / boxSize) };
+};
+
+type GetFlattenedIndexArgs = {
+  boxSize: number;
+  i: number;
+  j: number;
+};
+
+export const getFlattenedIndex = ({ boxSize, i, j }: GetFlattenedIndexArgs) => {
+  return i * boxSize + j;
+};
+
+export const isValidSudoku = (board: string[][]): boolean => {
+  const columnSets = Array.from({ length: board.length }, () => new Set());
+
+  const boxSets = Array.from({ length: board.length }, () => new Set());
+
+  for (let i = 0; i < board.length; i++) {
+    const lineSet = new Set();
+    const line = board[i];
+
+    for (let j = 0; j < line.length; j++) {
+
+      const curr = line[j];
+
+      if (curr === ".") {
+        continue;
+      }
+
+      const { i: boxI, j: boxJ } = getBoxIndexes({ boxSize: 3, i, j });
+
+      const boxIndex = getFlattenedIndex({
+        boxSize: 3,
+        i: boxI,
+        j: boxJ,
+      });
+
+      if (
+        lineSet.has(curr) ||
+        columnSets[j].has(curr) ||
+        boxSets[boxIndex].has(curr)
+      ) {
+        return false;
+      }
+
+      lineSet.add(curr);
+
+      columnSets[j].add(curr);
+
+      boxSets[boxIndex].add(curr);
+    }
+  }
+
+  return true;
+};
