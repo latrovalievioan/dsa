@@ -1,3 +1,24 @@
+export const checkLine = (xs: string[]) => {
+    const valuesSet = new Set()
+
+    let isValid = true;
+
+    for (let i = 0; i < xs.length; i++) {
+        const curr = xs[i]
+
+        if(curr === '.') {
+            continue
+        }
+
+        if(valuesSet.has(curr)) {
+            isValid = false
+            break
+        }
+
+        valuesSet.add(curr)
+    }
+}
+
 function isValidSudoku(board: string[][]): boolean {
     
 };
