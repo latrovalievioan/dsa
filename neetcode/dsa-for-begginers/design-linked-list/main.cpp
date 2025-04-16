@@ -19,10 +19,54 @@ public:
     ListNode* tail;
     int length;
 
-    MyLinkedList() {
-        head = nullptr;
-        tail = nullptr;
-        length = 0;
+    MyLinkedList() : 
+        head {nullptr},
+        tail {nullptr},
+        length  {0}
+        {}
+
+    MyLinkedList(const MyLinkedList& other) : MyLinkedList() {
+        cout<<"Copy ctor" << endl;
+        *this = other;
+    }
+
+
+    MyLinkedList& operator=(const MyLinkedList& other) {
+        cout<<"Copy = \n";
+        if(this != &other) {
+            clear();
+            ListNode* curr = other.head;
+            while(curr) {
+                addAtTail(curr->val);
+                curr = curr->next;
+            }
+        }
+
+        return *this;
+    }
+
+    MyLinkedList& operator=(MyLinkedList&& other) {
+        cout<<"Move = \n";
+        if(this != &other) {
+            swap(head, other.head);
+            swap(tail, other.tail);
+            swap(length, other.length);
+            other.clear();
+        }
+
+        return *this;
+    }
+
+    ~MyLinkedList() {
+        cout<<"dtor \n";
+        show();
+        clear();
+    }
+
+    void clear() {
+        while(length) {
+            deleteAtIndex(0);
+        }
     }
     
     int get(int index) {
@@ -51,7 +95,7 @@ public:
 
         length++;
 
-        show();
+        // show();
     }
     
     void addAtTail(int val) {
@@ -68,12 +112,12 @@ public:
 
         length++;
 
-        show();
+        // show();
     }
     
     void addAtIndex(int index, int val) {
         if(index < 0 || index > length) {
-            show();
+            // show();
 
             return;
         }
@@ -104,12 +148,12 @@ public:
 
         length++;
 
-        show();
+        // show();
     }
     
     void deleteAtIndex(int index) {
         if(index >= length || index < 0) {
-            show();
+            // show();
 
             return;
         }
@@ -124,17 +168,23 @@ public:
 
                 delete curr;
             } else if(length == 2) {
+                auto tmp = curr;
                 curr = curr->next;
                 head = curr;
                 tail = curr;
+
+                delete tmp;
             } else {
+                auto tmp = curr;
                 curr = curr->next;
                 head = curr;
+
+                delete tmp;
             }
 
             length--;
 
-            show();
+            // show();
 
             return;
         }
@@ -165,7 +215,7 @@ public:
 
         length--;
 
-        show();
+        // show();
     }
 
     void show() {
@@ -191,13 +241,42 @@ public:
     }
 };
 
-int main () {
-    MyLinkedList linkedList;
+auto fn () -> MyLinkedList {
+    MyLinkedList ls;
+    ls.addAtHead(1);
+    ls.addAtHead(1);
+    ls.addAtHead(1);
+    return ls;
+}
 
-    linkedList.addAtHead(1);
-    linkedList.addAtTail(2);
-    linkedList.deleteAtIndex(1);
+int main () {
+    // MyLinkedList linkedList;
+    //
+    // linkedList.addAtHead(1);
+    // linkedList.addAtTail(2);
+    // linkedList.addAtTail(3);
+    //
+    //
+    // MyLinkedList linkedList2 = linkedList;
+    //
+    // linkedList.addAtHead(23);
+    //
+    // linkedList2.deleteAtIndex(1);
+    //
+    // linkedList.show();
+    // linkedList2.show();
+    //
+    // linkedList.deleteAtIndex(1);
     // linkedList.addAtTail(4);
+    //
+
+    MyLinkedList x;
+
+    x = fn();
+
+    x.show();
 
     return 0;
 }
+
+
