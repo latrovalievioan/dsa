@@ -153,7 +153,7 @@ tr.push(7);
 //
 // console.log(tr.root)
 
-// tr.show();
+tr.show();
 //
 for(const x of tr) {
     console.log(x)
